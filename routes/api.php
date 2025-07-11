@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UsersController;
-use App\Http\Controller\Api\ProductController;
+use App\Http\Controllers\Api\ProductController;
 
 
 Route::post('/register', [AuthController::class, 'register']);
