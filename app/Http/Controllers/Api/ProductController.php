@@ -17,8 +17,13 @@ class ProductController extends Controller
             'price' => 'required|numeric|min:0',
             'discount' => 'nullable|numeric|min:0|max:100',
             'stock' => 'required|integer|min:0',
-            'image' => 'nullable|url'
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048'
         ]);
+
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('product_images', 'public');
+            $validated['image'] = asset('storage/' . $imagePath); // Public URL
+        }
 
         $product = Product::create($validated);
 
