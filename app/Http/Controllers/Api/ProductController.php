@@ -22,7 +22,7 @@ class ProductController extends Controller
 
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('product_images', 'public');
-            $validated['image'] = asset('storage/' . $imagePath); // Public URL
+            $validated['image'] = asset('storage/' . $imagePath);
         }
 
         $product = Product::create($validated);
@@ -36,7 +36,7 @@ class ProductController extends Controller
 
     public function index()
     {
-        $products = Product::paginate(5);
+        $products = Product::paginate(3);
 
         return response()->json([
             'success' => true,
