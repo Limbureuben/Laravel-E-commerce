@@ -98,7 +98,7 @@ class ProductController extends Controller
 public function landing()
 {
     try {
-        $products = Product::latest()->take(4)->get();
+        $products = Product::latest()->take(5)->get();
 
         return response()->json([
             'success' => true,
