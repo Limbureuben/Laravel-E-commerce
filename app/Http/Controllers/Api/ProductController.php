@@ -95,22 +95,21 @@ class ProductController extends Controller
 
   // ProductController.php
 
-public function landing()
-{
-    try {
-        $products = Product::latest()->take(5)->get();
+    public function landing()
+    {
+        try {
+            $products = Product::latest()->take(5)->get();
 
-        return response()->json([
-            'success' => true,
-            'products' => $products
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => $e->getMessage()
-        ], 500);
+            return response()->json([
+                'success' => true,
+                'products' => $products
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
-}
-
 
 }
