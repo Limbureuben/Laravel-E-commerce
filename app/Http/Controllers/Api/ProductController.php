@@ -44,10 +44,42 @@ class ProductController extends Controller
         ]);
     }
 
-    
+
+
+    // public function update(Request $request, $id)
+    // {
+    //     $validated = $request->validate([
+    //         'name' => 'required|string|max:255',
+    //         'description' => 'required|string',
+    //         'price' => 'required|numeric|min:0',
+    //         'discount' => 'nullable|numeric|min:0|max:100',
+    //         'stock' => 'required|integer|min:0',
+    //         'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+    //     ]);
+
+    //     $product = Product::findOrFail($id);
+
+    //     if ($request->hasFile('image')) {
+    //         $imagePath = $request->file('image')->store('product_images', 'public');
+    //         $validated['image'] = asset('storage/' . $imagePath);
+    //     }
+
+    //     $product->update($validated);
+
+    //     return response()->json([
+    //         'success' => true,
+    //         'message' => 'Product updated successfully',
+    //         'product' => $product
+    //     ]);
+    // }
+
 
     public function update(Request $request, $id)
     {
+        if (!auth()->check()) {
+            return response()->json(['error' => 'User not authenticated'], 401);
+        }
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
