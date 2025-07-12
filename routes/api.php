@@ -13,7 +13,7 @@ Route::delete('/users/{id}', [UsersController::class, 'destroy']);
 // Route::middleware('auth:sanctum')->delete('/users/{id}', [UsersController::class, 'destroy']);
 Route::post('/add-products', [ProductController::class, 'store']);
 Route::get('/products', [ProductController::class, 'index']);
-// Route::put('/products/{id}', [ProductController::class, 'update']);
-Route::middleware('auth:sanctum')->group(function () {
-    Route::put('/products/{id}', [ProductController::class, 'update']);
-});
+Route::put('/products/{id}', [ProductController::class, 'update']);
+// Route::middleware('auth:sanctum')->group(function () {
+//     Route::put('/products/{id}', [ProductController::class, 'update']);
+// });
