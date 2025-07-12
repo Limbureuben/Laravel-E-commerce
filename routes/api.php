@@ -17,3 +17,12 @@ Route::put('/products/{id}', [ProductController::class, 'update']);
 // Route::middleware('auth:sanctum')->group(function () {
 //     Route::put('/products/{id}', [ProductController::class, 'update']);
 // });
+
+Route::delete('/products/{id}', [ProductController::class, 'destroy']);
+// Route::middleware('auth:sanctum')->group(function () {
+//     Route::delete('/products/{id}', [ProductController::class, 'destroy']);
+// });
+
+Route::get('/products/landing', [ProductController::class, 'landing']);
+
+

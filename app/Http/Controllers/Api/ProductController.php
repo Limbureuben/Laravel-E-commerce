@@ -92,4 +92,14 @@ class ProductController extends Controller
         'message' => 'Product deleted successfully',
     ]);
    }
+
+   public function landingproduct()
+   {
+    $products = Product::latest()->take(4)->get();
+
+    return response()->json([
+        'success' => true,
+        'products' => $product
+    ]);
+   }
 }
