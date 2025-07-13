@@ -24,5 +24,6 @@ Route::delete('/products/{id}', [ProductController::class, 'destroy']);
 // });
 
 Route::get('/products/landing', [ProductController::class, 'landing']);
+Route::get('/user/product', [ProductController::class, 'Userproduct']);
 
 

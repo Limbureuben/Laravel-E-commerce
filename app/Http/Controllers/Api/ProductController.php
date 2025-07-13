@@ -112,4 +112,14 @@ class ProductController extends Controller
         }
     }
 
+
+    public function Userproduct()
+    {
+        $product = Product::all();
+        return response()->json([
+            'products' => $products,
+            'total' => $products->count(),
+        ]);
+    }
+
 }
