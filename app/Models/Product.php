@@ -14,4 +14,14 @@ class Product extends Model
         'stock',
         'image'
     ];
+
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class);
+    }
+
+    public function averageRating()
+    {
+        return $this->ratings()->avg('rating');
+    }
 }
