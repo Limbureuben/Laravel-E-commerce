@@ -115,14 +115,38 @@ class ProductController extends Controller
     }
 
 
+    // public function userproduct()
+    // {
+    //     $products = Product::all();
+    //     return response()->json([
+    //         'products' => $products,
+    //         'total' => $products->count(),
+    //         'averageRating' => $products->averageRating()
+    //     ]);
+    // }
+
     public function userproduct()
     {
-        $products = Product::all();
+        $products = Product::with('ratings')->get(); // eager load ratings
+
+        $data = $products->map(function ($product) {
+            return [
+                'id' => $product->id,
+                'name' => $product->name,
+                'description' => $product->description,
+                'price' => $product->price,
+                'discount' => $product->discount,
+                'stock' => $product->stock,
+                'image' => $product->image,
+                'average_rating' => round($product->averageRating(), 1),
+            ];
+        });
+
         return response()->json([
-            'products' => $products,
+            'products' => $data,
             'total' => $products->count(),
-            'averageRating' => $products->averageRating()
         ]);
     }
+
 
 }
