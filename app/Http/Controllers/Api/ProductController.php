@@ -121,6 +121,7 @@ class ProductController extends Controller
         return response()->json([
             'products' => $products,
             'total' => $products->count(),
+            'averageRating' => $products->averageRating()
         ]);
     }
 
