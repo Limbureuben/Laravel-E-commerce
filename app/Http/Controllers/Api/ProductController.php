@@ -127,7 +127,7 @@ class ProductController extends Controller
 
     public function userproduct()
     {
-        $products = Product::with('ratings')->get(); // eager load ratings
+        $products = Product::with('ratings')->get();
 
         $data = $products->map(function ($product) {
             return [
@@ -148,5 +148,31 @@ class ProductController extends Controller
         ]);
     }
 
+
+    public function rate(Request $request)
+    {
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'rating' => 'required|integer|min:1|max:5',
+        ]);
+
+        $user = $request->user();
+
+        $rating = Rating::updateOrCreate(
+            [
+                'user_id' => $user->id,
+                'product_id' => $request->product_id,
+            ],
+            [
+                'rating' => $request->rating,
+            ]
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Rating submitted successfully',
+            'data' => $rating,
+        ]);
+    }
 
 }
