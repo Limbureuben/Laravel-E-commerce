@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UsersController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\PaymentController;
 
 
 Route::post('/register', [AuthController::class, 'register']);
@@ -28,5 +29,7 @@ Route::get('/user-product', [ProductController::class, 'userproduct']);
 
 Route::middleware('auth:sanctum')->post('/rating', [RatingController::class, 'rate']);
 // Route::post('/rating', [ProductController::class, 'rate']);
+Route::get('/payment/callback', [PaymentController::class, 'callback']);
+Route::get('/register-ipn', [PaymentController::class, 'registerIPN']);
 
 
