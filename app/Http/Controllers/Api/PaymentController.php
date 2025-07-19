@@ -29,19 +29,26 @@ class PaymentController extends Controller
 
     public function registerIPN()
     {
-        $token = $this->getToken();
+        \Log::info("Register IPN called");
 
-        if (!$token) {
-            return response()->json(['error' => 'Token not generated'], 500);
+        try {
+            $token = $this->getToken();
+            if (!$token) {
+                return response()->json(['error' => 'Token not generated'], 500);
+            }
+
+            $response = Http::withToken($token)->post($this->baseUrl . '/api/URLSetup/RegisterIPN', [
+                'url' => env('APP_URL') . '/api/payment/callback',
+                'ipn_notification_type' => 'GET'
+            ]);
+
+            return response()->json($response->json());
+        } catch (\Exception $e) {
+            \Log::error('Error registering IPN: ' . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
         }
-
-        $response = Http::withToken($token)->post($this->baseUrl . '/api/URLSetup/RegisterIPN', [
-            'url' => env('APP_URL') . '/api/payment/callback',
-            'ipn_notification_type' => 'GET' // or 'POST'
-        ]);
-
-        return response()->json($response->json());
     }
+
 
     public function callback(Request $request)
     {

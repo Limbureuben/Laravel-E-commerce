@@ -27,8 +27,8 @@ Route::delete('/products/{id}', [ProductController::class, 'destroy']);
 Route::get('/products/landing', [ProductController::class, 'landing']);
 Route::get('/user-product', [ProductController::class, 'userproduct']);
 
-Route::middleware('auth:sanctum')->post('/rating', [RatingController::class, 'rate']);
-// Route::post('/rating', [ProductController::class, 'rate']);
+// Route::middleware('auth:sanctum')->post('/rating', [RatingController::class, 'rate']);
+Route::post('/rating', [ProductController::class, 'rate']);
 Route::get('/payment/callback', [PaymentController::class, 'callback']);
 Route::get('/register-ipn', [PaymentController::class, 'registerIPN']);
 
