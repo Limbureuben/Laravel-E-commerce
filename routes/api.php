@@ -29,7 +29,12 @@ Route::get('/user-product', [ProductController::class, 'userproduct']);
 
 // Route::middleware('auth:sanctum')->post('/rating', [RatingController::class, 'rate']);
 Route::post('/rating', [ProductController::class, 'rate']);
-Route::get('/payment/callback', [PaymentController::class, 'callback']);
-Route::get('/register-ipn', [PaymentController::class, 'registerIPN']);
+
+Route::get('/payment/token', [PaymentController::class, 'testToken']);
+Route::get('/ipn-handler', [PaymentController::class, 'callback']);
+Route::post('/register-ipn', [PaymentController::class, 'registerIPN']);
+Route::post('/submit-payment', [PaymentController::class, 'submitOrder']);
+
+// Route::get('/test-token', [PaymentController::class, 'testToken']);
 
 

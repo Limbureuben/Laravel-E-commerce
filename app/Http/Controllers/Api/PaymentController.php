@@ -19,13 +19,39 @@ class PaymentController extends Controller
         $this->consumerSecret = env('PESAPAL_CONSUMER_SECRET');
     }
 
-    private function getToken()
+   private function getToken()
     {
-        $response = Http::withBasicAuth($this->consumerKey, $this->consumerSecret)
-            ->post($this->baseUrl . '/api/Auth/RequestToken');
+        try {
+            $response = Http::asJson()
+                ->withHeaders([
+                    'Accept' => 'application/json',
+                ])
+                ->post($this->baseUrl . '/api/Auth/RequestToken', [
+                    'consumer_key' => $this->consumerKey,
+                    'consumer_secret' => $this->consumerSecret,
+                ]);
 
-        return $response->json()['token'] ?? null;
+            \Log::info('Pesapal Token Response', [
+                'status' => $response->status(),
+                'body' => $response->body(),
+            ]);
+
+            if ($response->successful()) {
+                $json = $response->json();
+                return $json['token'] ?? null;
+            }
+
+        } catch (\Exception $e) {
+            \Log::error('Pesapal Token Error', [
+                'message' => $e->getMessage(),
+            ]);
+        }
+
+        return null;
     }
+
+
+
 
     public function registerIPN()
     {
@@ -33,20 +59,93 @@ class PaymentController extends Controller
 
         try {
             $token = $this->getToken();
+
             if (!$token) {
                 return response()->json(['error' => 'Token not generated'], 500);
             }
 
             $response = Http::withToken($token)->post($this->baseUrl . '/api/URLSetup/RegisterIPN', [
                 'url' => env('APP_URL') . '/api/payment/callback',
-                'ipn_notification_type' => 'GET'
+                'ipn_notification_type' => 0
             ]);
 
-            return response()->json($response->json());
+            if ($response->successful()) {
+                return response()->json($response->json());
+            }
+
+            \Log::error('IPN registration failed: ' . $response->body());
+            return response()->json(['error' => 'Failed to register IPN', 'details' => $response->body()], 500);
         } catch (\Exception $e) {
-            \Log::error('Error registering IPN: ' . $e->getMessage());
+            \Log::error('Exception during IPN registration: ' . $e->getMessage());
             return response()->json(['error' => $e->getMessage()], 500);
         }
+    }
+
+
+
+    public function testToken()
+    {
+        $response = Http::withHeaders([
+            'Accept' => 'application/json',
+        ])->post($this->baseUrl . '/api/Auth/RequestToken', [
+            'consumer_key' => $this->consumerKey,
+            'consumer_secret' => $this->consumerSecret,
+        ]);
+
+        return response()->json([
+            'status' => $response->status(),
+            'body' => $response->body(),
+            'json' => $response->json(),
+        ]);
+    }
+
+
+    public function submitOrder(Request $request)
+    {
+
+        $request->validate([
+            'phone' => 'required|string',
+            'amount' => 'required|numeric|min:100',
+        ]);
+
+        $token = $this->getToken();
+        if (!$token) {
+            return response()->json(['error' => 'Token not generated'], 500);
+        }
+
+        $ipnId = env('PESAPAL_IPN_ID'); // Save this after IPN registration
+
+        $orderData = [
+            'amount' => $request->input('amount'),
+            'currency' => 'TZS',
+            'description' => 'Payment via Mobile Money',
+            'ipn_id' => $ipnId,
+            'merchant_reference' => uniqid('order_'),
+            'callback_url' => env('APP_URL') . '/api/ipn-handler',
+            'billing_address' => [
+                'email' => 'limbureubenn@gmail.com',
+                'phone_number' => $request->input('phone'),
+                'first_name' => 'Customer',
+                'last_name' => 'User',
+                'line_1' => 'N/A',
+                'city' => 'N/A',
+                'state' => 'N/A',
+                'country_code' => 'TZ',
+                'postal_code' => '00000'
+            ]
+        ];
+
+        $response = Http::withToken($token)
+        ->post($this->baseUrl . '/api/Transactions/SubmitOrderRequest', $orderData);
+
+        if ($response->successful()) {
+            return response()->json($response->json());
+        }
+
+        return response()->json([
+        'error' => 'Failed to submit order',
+        'details' => $response->body()
+    ], 500);
     }
 
 
