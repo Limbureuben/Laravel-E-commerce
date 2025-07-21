@@ -15,7 +15,6 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
-            // 'discount' => 'nullable|numeric|min:0|max:100',
             'discount' => 'nullable|numeric|min:0|max:100',
             'stock' => 'required|integer|min:0',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048'
@@ -54,7 +53,6 @@ class ProductController extends Controller
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
             'discount' => 'nullable|numeric|min:0|max:100',
-            // 'discount' => 'nullable|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ]);
@@ -114,16 +112,6 @@ class ProductController extends Controller
         }
     }
 
-
-    // public function userproduct()
-    // {
-    //     $products = Product::all();
-    //     return response()->json([
-    //         'products' => $products,
-    //         'total' => $products->count(),
-    //         'averageRating' => $products->averageRating()
-    //     ]);
-    // }
 
     public function userproduct()
     {

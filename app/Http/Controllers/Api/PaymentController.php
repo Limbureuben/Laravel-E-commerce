@@ -102,7 +102,6 @@ class PaymentController extends Controller
 
     public function submitOrder(Request $request)
     {
-
         $request->validate([
             'phone' => 'required|string',
             'amount' => 'required|numeric|min:100',
