@@ -13,6 +13,18 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
+    // private function generateToken($user)
+    // {
+    //     $payload = [
+    //         'id' => $user->id,
+    //         'username' => $user->username,
+    //         'role' => $user->role,
+    //         'exp' => time() + (7 * 24 * 60 * 60)
+    //     ];
+
+    //     return JWT::encode($payload, env('JWT_SECRET'), 'HS256');
+    // }
+
     private function generateToken($user)
     {
         $payload = [
@@ -22,8 +34,11 @@ class AuthController extends Controller
             'exp' => time() + (7 * 24 * 60 * 60)
         ];
 
-        return JWT::encode($payload, env('JWT_SECRET'), 'HS256');
+        $secret = base64_decode(env('JWT_SECRET'));  // decode base64 secret
+
+        return JWT::encode($payload, $secret, 'HS256');
     }
+
 
     public function register(Request $request)
         {
