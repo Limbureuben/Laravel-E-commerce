@@ -5,15 +5,18 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UsersController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\PaymentController;
-
+use GuzzleHttp\Middleware;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::get('/users', [UsersController::class, 'index']);
+// Route::get('/users', [UsersController::class, 'index']);
+Route::get('/users', [UsersController::class, 'index'])->middleware('auth:api');
+Route::middleware('auth:api')->get('/profile', [AuthController::class, 'getProfile']);
+
 Route::delete('/users/{id}', [UsersController::class, 'destroy']);
 // Route::middleware('auth:sanctum')->delete('/users/{id}', [UsersController::class, 'destroy']);
 Route::post('/add-products', [ProductController::class, 'store']);
-Route::get('/products', [ProductController::class, 'index']);
+Route::get('/products', [ProductController::class, 'index'])->middleware('auth:api');
 Route::put('/products/{id}', [ProductController::class, 'update']);
 // Route::middleware('auth:sanctum')->group(function () {
 //     Route::put('/products/{id}', [ProductController::class, 'update']);

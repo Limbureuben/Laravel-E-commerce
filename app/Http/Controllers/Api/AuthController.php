@@ -118,4 +118,18 @@ class AuthController extends Controller
             return response()->json(['message' => 'Failed to logout, please try again'], 500);
         }
     }
+
+    public function getProfile(Request $request)
+    {
+        // This will get the authenticated user using the token
+        $user = JWTAuth::parseToken()->authenticate();
+
+        return response()->json([
+            'id' => $user->id,
+            'username' => $user->username,
+            'email' => $user->email,
+            'role' => $user->role,
+        ]);
+    }
+
 }
